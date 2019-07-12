@@ -1,0 +1,15 @@
+body{
+  background-image: url(/T6xgcFC.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  
+
+}
+
+canvas{
+  border: 5px groove gray;
+  border-radius: 10px;
+  display:block;
+  margin: 0 auto;
+  padding: 1px 1px;
+}
