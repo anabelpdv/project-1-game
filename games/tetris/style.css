@@ -1,9 +1,8 @@
 body{
-  background-image: url(/T6xgcFC.jpg);
+  background-image: url(T6xgcFC.jpg);
   background-size: cover;
   background-repeat: no-repeat;
-  
-
+  padding:7.5px 0;
 }
 
 canvas{
@@ -11,5 +10,4 @@ canvas{
   border-radius: 10px;
   display:block;
   margin: 0 auto;
-  padding: 1px 1px;
 }
