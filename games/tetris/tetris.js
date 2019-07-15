@@ -1,50 +1,95 @@
+window.onload =()=>{
 let canvas = document.querySelector('#tetris');
 let context = canvas.getContext('2d');
 canvas.width =468;
 canvas.height = 780;
 
-window.onload =()=>{
-
-  let audio = new Audio("Popcorn.wav");
-  audio.play();
-}
-
-
 context.scale(39,39);//make the components bigger
 
 
-const matrix = [
-  [0,0,0],
-  [1,1,1],
-  [0,1,0]
-];
 
 
-/***************************************************************************************************************** */
-/***************************************************************************************************************** */
-/***************************************************************************************************************** */
-/***************************************************************************************************************** */
-/****************  Keep working on this later and do kata and review example from lecture ************************ */
-/***************************************************************************************************************** */
-/***************************************************************************************************************** */
-/***************************************************************************************************************** */
-/***************************************************************************************************************** */
 
+
+
+
+const backgrounds = [null,null,'/images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
+let showScore = document.querySelector('#score > div > p');
+let showLevel = document.querySelector('#level > div > p');
+let playButton = document.querySelector('#play-button');
+let instButton = document.querySelector('#inst-button');
+let audio = new Audio("sounds/Popcorn.mp3");
+
+
+
+// const matrix = [
+//   [0,0,0],
+//   [1,1,1],
+//   [0,1,0]
+// ];
+
+
+
+playButton.onclick = ()=>{
+  document.getElementsByClassName("control")[0].style.display = 'none'; 
+  slideDownTetris();
+  audio.play();
+  };
+
+instButton.onclick = ()=>{
+$('#instructions').slideToggle();
+}
+
+function slideDownTetris(){
+  $("#canvas").slideDown(1150,'linear',()=>{
+    $(".panel").slideDown(1300)
+  }); 
+  
+}
+
+function updateScore(){
+  player.score++;
+  showScore.innerHTML = player.score;
+  nextLevel(); 
+}
+function gameOver(){
+  if(player.pos.y ===0){  
+    gameOverMessage(); 
+    cancelAnimationFrame();
+  }
+}
+function gameOverMessage(){
+  context.fillStyle = "white"
+  context.font = "1.7px Arial";
+  context.fillText("GAME OVER",0.9,9.5);
+}
+
+function nextLevel(){
+  if((player.score % 10 === 0) && (player.dropInterval > 200)){
+    player.level++;
+    document.body.style.backgroundImage = `url(${backgrounds[player.level]})`
+    player.dropInterval -= 200;
+    showLevel.innerHTML = player.level;
+    
+  }
+}
 
 function arenaSweep(){
   for(let y = arena.length - 1; y >= 0; y--){
       if(arena[y].every(x => x !== 0)){
        arena.unshift(arena.splice(y,1)[0].fill(0));
-        y++;
+        y++;      
+        updateScore()
       }
    }
  }
+
 
 function collide(arena,player){
   [m, o] = [player.matrix, player.pos];
   for(let y = 0; y < m.length; y++){
     for(let x = 0; x < m[y].length; x++){
-      if(m[y][x] !== 0 &&
+      if(m[y][x] !== 0 && 
          (arena[y + o.y] && //better practice use array.length this hecks id the row exits in the arena
          arena[y + o.y][x + o.x]) !== 0){//this also checks for collsion left right
            return true;
@@ -106,10 +151,7 @@ function createPiece(type){
       [7,7,7],
       [0,0,0]
     ];
-
   }
-  
-
 }
 
 function draw(){
@@ -118,18 +160,21 @@ function draw(){
   drawMatrix(player.matrix,player.pos);
 }
 
-const colors = ['null','#D26414', 'blue', 'purple', 'yellow','green','red','gray']
+const colors = ['null','#2E34A6', '#41A69C', '#ABBF0F', '#F27B13','#BF3E0F','#BF046B','#67696B']
 function drawMatrix(matrix, offset){
   matrix.forEach((row,y)=>{
     row.forEach((value,x)=>{
       if(value !== 0){
-       context.fillStyle = colors[value];
-        context.fillRect(x + offset.x, y + offset.y, 1, 1);
+
+        context.strokeStyle = "black";
+        context.lineWidth = 0.05;
+        context.strokeRect(x + offset.x,  y + offset.y , 1, 1);
+        context.fillStyle = colors[value];
+        context.fillRect(x + offset.x , y + offset.y, 1,1);
       }
     });
   });
 }
-
 
 function merge(arena, player){
   player.matrix.forEach((row,y)=>{
@@ -146,6 +191,7 @@ function playerDrop(){
   if(collide(arena, player)){
     player.pos.y--;
     merge(arena, player);/***************this might be the place where to change the player****************/ 
+    gameOver();
     playerReset();
     arenaSweep();
   }
@@ -153,27 +199,34 @@ function playerDrop(){
 }
 
 let dropCounter = 0;
-let dropInterval = 1000;
+//let dropInterval = 1000;
 let lastTime = 0;
 
+
+let animation;
 function update(time = 0){// time is an argument that the callback function of requestAnimationFrame receives automatically like the event argument
   
   const deltaTime = time - lastTime;//time interval in milliseconds between frames
   lastTime = time;
   dropCounter += deltaTime;//this eventually adds up to a number greater than the drop inteval and as soon as that is true another player is moved down 1px;
 
-  if(dropCounter > dropInterval){
+  if(dropCounter > player.dropInterval){
     playerDrop();//move player 1 px
   }
   draw();//draw player in new position and arena too
-  requestAnimationFrame(update)
+ animation = requestAnimationFrame(update)
 }
 
+const pieces = 'TOISZJL';
 
 const player = {
   pos:{x:5, y:0,},
-  matrix: createPiece('T')
+  matrix: createPiece(pieces[pieces.length * Math.random() | 0]),
+  score: 0,
+  dropInterval:1000,
+  level: 1,
 }
+
 const arena = createMatrix(12,20);
 
 function playerMove(dir){
@@ -184,13 +237,11 @@ function playerMove(dir){
 }
 
 function playerReset(){
-  const pieces = 'TOISZJL';
   player.matrix= createPiece(pieces[pieces.length * Math.random() | 0]);
   player.pos.y = 0;
-  player.pos.x = (arena.length / 2 | 0) - (player.matrix[0].length/2 |0)
+  //player.pos.x = (arena.length / 2 | 0) - (player.matrix[0].length/2 | 0)
+  player.pos.x = 5;
 }
-
-
 
 function playerRotate(dir){
   const pos = player.pos.x;
@@ -247,3 +298,4 @@ window.onkeydown =(e)=>{
 }
 
 update();
+}

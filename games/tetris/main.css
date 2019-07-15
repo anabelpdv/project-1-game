@@ -1,0 +1,31 @@
+body{
+  background-image: url(images/front.jpg);
+  background-size: cover;
+
+ background-repeat: no-repeat;
+
+}
+
+.wrapper{
+  width:100%;
+  margin-top:300px
+}
+div{
+  width:50%;
+  margin:0 auto;
+  text-align: center;
+  margin-top:100px;
+}
+#play{
+  margin-top:290px;
+}
+a{
+border: 1px groove gray;
+border-radius: 10px;
+padding:20px 40px;
+background-color: rgb(0,0,102,0.7);
+text-decoration: none;
+color:white;
+font-weight: bolder;
+font-size: 3em;
+}
