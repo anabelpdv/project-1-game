@@ -13,7 +13,7 @@ context.scale(39,39);//make the components bigger
 
 
 
-const backgrounds = [null,null,'/images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
+const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
 let showScore = document.querySelector('#score > div > p');
 let showLevel = document.querySelector('#level > div > p');
 let playButton = document.querySelector('#play-button');
