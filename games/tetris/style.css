@@ -29,6 +29,7 @@ button{
   font-size: 3em;
   border:none;
   cursor:pointer;
+  margin-top:25px;
 }
 #instructions{
   display:none;
@@ -44,7 +45,7 @@ padding-right:15px;
 }
 
 #place-holder{
-  height:795px;
+  height:795px
 }
 
 #canvas{
@@ -53,7 +54,6 @@ padding-right:15px;
   border: 5px groove gray;
   border-radius: 10px;
 }
-
 .wrapper{
   display:flex;
 }

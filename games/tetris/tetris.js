@@ -18,23 +18,12 @@ let showScore = document.querySelector('#score > div > p');
 let showLevel = document.querySelector('#level > div > p');
 let playButton = document.querySelector('#play-button');
 let instButton = document.querySelector('#inst-button');
-let audio = new Audio("sounds/Popcorn.mp3");
+//let audio = new Audio("sounds/Popcorn.mp3");
 
 
 
-// const matrix = [
-//   [0,0,0],
-//   [1,1,1],
-//   [0,1,0]
-// ];
 
 
-
-playButton.onclick = ()=>{
-  document.getElementsByClassName("control")[0].style.display = 'none'; 
-  slideDownTetris();
-  audio.play();
-  };
 
 instButton.onclick = ()=>{
 $('#instructions').slideToggle();
@@ -59,7 +48,7 @@ function gameOver(){
   }
 }
 function gameOverMessage(){
-  context.fillStyle = "white"
+  context.fillStyle = "white";
   context.font = "1.7px Arial";
   context.fillText("GAME OVER",0.9,9.5);
 }
@@ -69,8 +58,7 @@ function nextLevel(){
     player.level++;
     document.body.style.backgroundImage = `url(${backgrounds[player.level]})`
     player.dropInterval -= 200;
-    showLevel.innerHTML = player.level;
-    
+    showLevel.innerHTML = player.level;  
   }
 }
 
@@ -165,12 +153,11 @@ function drawMatrix(matrix, offset){
   matrix.forEach((row,y)=>{
     row.forEach((value,x)=>{
       if(value !== 0){
-
         context.strokeStyle = "black";
-        context.lineWidth = 0.05;
-        context.strokeRect(x + offset.x,  y + offset.y , 1, 1);
+        context.lineWidth = 0.04;
         context.fillStyle = colors[value];
         context.fillRect(x + offset.x , y + offset.y, 1,1);
+        context.strokeRect(x + offset.x + 0.030,  y + offset.y + 0.02 , 1, 0.98);
       }
     });
   });
@@ -199,23 +186,24 @@ function playerDrop(){
 }
 
 let dropCounter = 0;
-//let dropInterval = 1000;
 let lastTime = 0;
 
 
-let animation;
+
 function update(time = 0){// time is an argument that the callback function of requestAnimationFrame receives automatically like the event argument
-  
+
   const deltaTime = time - lastTime;//time interval in milliseconds between frames
   lastTime = time;
   dropCounter += deltaTime;//this eventually adds up to a number greater than the drop inteval and as soon as that is true another player is moved down 1px;
-
+  console.log(dropCounter)
   if(dropCounter > player.dropInterval){
     playerDrop();//move player 1 px
   }
   draw();//draw player in new position and arena too
- animation = requestAnimationFrame(update)
+  
+  requestAnimationFrame(update)
 }
+
 
 const pieces = 'TOISZJL';
 
@@ -288,14 +276,16 @@ window.onkeydown =(e)=>{
     case 40:
       playerDrop();
       break;
-    // case 81:
-    //   playerRotate(-1);
-    // break;
     case 38:
       playerRotate(-1);
     break;
   }
 }
+playButton.onclick = ()=>{
+  document.getElementsByClassName("control")[0].style.display = 'none'; 
+  slideDownTetris();
+  //audio.play();
+  update();
+  };
 
-update();
 }
