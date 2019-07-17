@@ -7,21 +7,12 @@ canvas.height = 780;
 context.scale(39,39);//make the components bigger
 
 
-
-
-
-
-
-
 const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
 let showScore = document.querySelector('#score > div > p');
 let showLevel = document.querySelector('#level > div > p');
 let playButton = document.querySelector('#play-button');
 let instButton = document.querySelector('#inst-button');
 //let audio = new Audio("sounds/Popcorn.mp3");
-
-
-
 
 
 
@@ -78,7 +69,7 @@ function collide(arena,player){
   for(let y = 0; y < m.length; y++){
     for(let x = 0; x < m[y].length; x++){
       if(m[y][x] !== 0 && 
-         (arena[y + o.y] && //better practice use array.length this hecks id the row exits in the arena
+         ((arena.length > (y + o.y)) && //better practice use array.length this hecks id the row exits in the arena
          arena[y + o.y][x + o.x]) !== 0){//this also checks for collsion left right
            return true;
       }
@@ -195,7 +186,6 @@ function update(time = 0){// time is an argument that the callback function of r
   const deltaTime = time - lastTime;//time interval in milliseconds between frames
   lastTime = time;
   dropCounter += deltaTime;//this eventually adds up to a number greater than the drop inteval and as soon as that is true another player is moved down 1px;
-  console.log(dropCounter)
   if(dropCounter > player.dropInterval){
     playerDrop();//move player 1 px
   }
