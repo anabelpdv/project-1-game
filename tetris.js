@@ -12,8 +12,36 @@ let showScore = document.querySelector('#score > div > p');
 let showLevel = document.querySelector('#level > div > p');
 let playButton = document.querySelector('#play-button');
 let instButton = document.querySelector('#inst-button');
-//let audio = new Audio("sounds/Popcorn.mp3");
+//let backgroundAudio = new Audio("sounds/Popcorn.mp3");
+let landingTetrominoAudio = new Audio("sounds/falling-tetromino.mp3");
+let flippingTetrominoAudio = new Audio("sounds/flipping-tetromino.mp3");
 
+
+
+
+
+
+
+function generateRandomColor() {
+  return `rgb(${Math.floor(Math.random()*255)}, ${Math.floor(Math.random()*255)},${Math.floor(Math.random()*255)},0.3`;
+}
+
+
+function changeBackgroundColor() {
+  let colorBg =   document.getElementById("canvas")
+  colorBg.style.backgroundColor = generateRandomColor();
+}
+
+
+function myStopFunction() {
+  clearInterval();
+}
+
+let animation;
+
+$( '#tetris' ).click(function() {
+  $( "#tetris" ).effect( "shake" );
+});
 
 
 instButton.onclick = ()=>{
@@ -53,9 +81,13 @@ function nextLevel(){
   }
 }
 
+function myStop(int){
+  clearInterval(int);
+}
+
 function arenaSweep(){
   for(let y = arena.length - 1; y >= 0; y--){
-      if(arena[y].every(x => x !== 0)){
+      if(arena[y].every(x => x !== 0)){ 
        arena.unshift(arena.splice(y,1)[0].fill(0));
         y++;      
         updateScore()
@@ -158,6 +190,7 @@ function merge(arena, player){
   player.matrix.forEach((row,y)=>{
       row.forEach((value,x)=>{
         if(value !== 0){
+          
             arena[y + player.pos.y][x + player.pos.x] = value;
         }
       });
@@ -168,6 +201,7 @@ function playerDrop(){
   player.pos.y++;
   if(collide(arena, player)){
     player.pos.y--;
+    landingTetrominoAudio.play();
     merge(arena, player);/***************this might be the place where to change the player****************/ 
     gameOver();
     playerReset();
@@ -190,8 +224,9 @@ function update(time = 0){// time is an argument that the callback function of r
     playerDrop();//move player 1 px
   }
   draw();//draw player in new position and arena too
-  
+
   requestAnimationFrame(update)
+
 }
 
 
@@ -237,6 +272,8 @@ function playerRotate(dir){
 }
 
 function rotate(matrix,dir){
+  flippingTetrominoAudio.volume = 0.5;
+  flippingTetrominoAudio.play();
   for(let y = 0; y < matrix.length; y++){
     for(let x = 0; x < y; x++){
         [
@@ -274,7 +311,7 @@ window.onkeydown =(e)=>{
 playButton.onclick = ()=>{
   document.getElementsByClassName("control")[0].style.display = 'none'; 
   slideDownTetris();
-  //audio.play();
+  //backgroundAudio.play();
   update();
   };
 
