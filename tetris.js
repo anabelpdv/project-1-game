@@ -12,7 +12,7 @@ let showScore = document.querySelector('#score > div > p');
 let showLevel = document.querySelector('#level > div > p');
 let playButton = document.querySelector('#play-button');
 let instButton = document.querySelector('#inst-button');
-//let backgroundAudio = new Audio("sounds/Popcorn.mp3");
+let backgroundAudio = new Audio("sounds/Popcorn.mp3");
 let landingTetrominoAudio = new Audio("sounds/falling-tetromino.mp3");
 let flippingTetrominoAudio = new Audio("sounds/flipping-tetromino.mp3");
 
@@ -252,7 +252,7 @@ function playerMove(dir){
 function playerReset(){
   player.matrix= createPiece(pieces[pieces.length * Math.random() | 0]);
   player.pos.y = 0;
-  //player.pos.x = (arena.length / 2 | 0) - (player.matrix[0].length/2 | 0)
+  player.pos.x = (arena.length / 2) - (player.matrix[0].length/2 | 0)
   player.pos.x = 5;
 }
 
@@ -311,7 +311,8 @@ window.onkeydown =(e)=>{
 playButton.onclick = ()=>{
   document.getElementsByClassName("control")[0].style.display = 'none'; 
   slideDownTetris();
-  //backgroundAudio.play();
+  backgroundAudio.loop = true;
+  backgroundAudio.play();
   update();
   };
 
