@@ -61,7 +61,8 @@ padding-right:15px;
 .container{
   width:40%;
   display:flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 .panel{
   margin-top: 100px;
@@ -73,6 +74,12 @@ padding-right:15px;
   text-align: center;
   color:white;
   display: none;
+}
+#time{
+  font-size: 3.4em;
+}
+#time + p{
+  font-size: 2em;
 }
 .info{
   margin:0;

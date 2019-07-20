@@ -6,16 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Tetris</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  
   <script src="tetris.js"> </script>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div class="wrapper">
-    <div  class="container" id="score">
+    <div  class="container" >
         <div class="panel">
             <h1>SCORE</h1>
-            <p class="info">0</p>
+            <p id="score" class="info">0</p>
+        </div>
+        <div class="panel">
+            <h1>LINES</h1>
+            <p id="lines" class="info" >0</p>
         </div>
     </div>
       
@@ -25,10 +28,15 @@
         </div>
     </div>
 
-    <div class="container" id="level">
+    <div class="container">
         <div class="panel">
             <h1>LEVEL</h1>
-            <p class="info">1</p>
+            <p id="level" class="info">1</p>
+        </div>
+        <div class="panel">
+            <h1>TIME</h1>
+            <p id="time" class="info">0</p>
+            <p class="info">min</p>
         </div>
     </div>   
 </div>

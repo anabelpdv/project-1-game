@@ -4,94 +4,118 @@ let context = canvas.getContext('2d');
 canvas.width =468;
 canvas.height = 780;
 
+let isOver = false;
+
 context.scale(39,39);//make the components bigger
 
 
 const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
-let showScore = document.querySelector('#score > div > p');
-let showLevel = document.querySelector('#level > div > p');
+let showScore = document.querySelector('#score');
+let showLines = document.querySelector('#lines');
+let showLevel = document.querySelector('#level');
+let showTime = document.querySelector('#time');
 let playButton = document.querySelector('#play-button');
 let instButton = document.querySelector('#inst-button');
-//let backgroundAudio = new Audio("sounds/Popcorn.mp3");
+let backgroundAudio = new Audio("sounds/Popcorn.mp3");
 let landingTetrominoAudio = new Audio("sounds/falling-tetromino.mp3");
 let flippingTetrominoAudio = new Audio("sounds/flipping-tetromino.mp3");
 
 
 
-$( '#tetris' ).click(function() {
-  $( "#tetris" ).effect( "shake" );
-});
 
 
-instButton.onclick = ()=>{
+instButton.onclick = () => {
 $('#instructions').slideToggle();
 }
 
 function slideDownTetris(){
   $("#canvas").slideDown(1150,'linear',()=>{
     $(".panel").slideDown(1300)
-  }); 
-  
+  });  
 }
 
 function updateScore(){
   tetromino.score++;
-  showScore.innerHTML = tetromino.score;
-  nextLevel(); 
+  showScore.innerHTML = tetromino.score/100|0;
 }
-function gameOver(){
-  if(tetromino.pos.y ===0){  
-    gameOverMessage(); 
-    cancelAnimationFrame();
+
+
+let level = 1;
+function nextLevel(){
+  if((lineCounter % 2 === 0) && (tetromino.dropInterval > 200)){
+   level++;
+    document.body.style.backgroundImage = `url(${backgrounds[level]})`
+    tetromino.dropInterval -= 200;
+    showLevel.innerHTML = level;  
   }
 }
+
+
+
+
+let lineCounter = 0;
+
+function updateLines(){
+  showLines.innerHTML = ++lineCounter;
+  nextLevel(); 
+}
+
+
 function gameOverMessage(){
   context.fillStyle = "white";
   context.font = "1.7px Arial";
   context.fillText("GAME OVER",0.9,9.5);
 }
 
-function nextLevel(){
-  if((tetromino.score % 10 === 0) && (tetromino.dropInterval > 200)){
-    tetromino.level++;
-    document.body.style.backgroundImage = `url(${backgrounds[tetromino.level]})`
-    tetromino.dropInterval -= 200;
-    showLevel.innerHTML = tetromino.level;  
+
+
+class Tetris{
+  constructor(height,width){
+    this.width = width;
+    this.height = height;
+    this.matrix = this.getMatrix();
+  }
+  getMatrix(){
+      const matrix = [];
+          while(this.height > 0){
+            matrix.push(new Array(this.width).fill(0))
+            this.height--;
+          }
+      return matrix;
+  }
+  collision(tetromino){
+    for(let y = 0; y < tetromino.matrix.length; y++){
+      for(let x = 0; x < tetromino.matrix[y].length; x++){
+        if(tetromino.matrix[y][x] !== 0 &&
+          ((this.matrix.length > (y + tetromino.pos.y)) &&
+          this.matrix[y + tetromino.pos.y][x + tetromino.pos.x]) !== 0){
+              return true;                                    
+            }
+          }
+        }
+      return false;
+  }
+  clearLines(){
+    for(let y = this.matrix.length - 1; y >= 0; y--){
+        if(this.matrix[y].every((value) => value !==0)){
+            this.matrix.unshift(this.matrix.splice(y,1)[0].fill(0));
+            y++;
+            updateLines();
+        }
+      }
+  }
+
+  landTetromino(player){
+    player.matrix.forEach((row,y) => {
+      row.forEach((value,x) =>{ 
+        if(value !== 0){
+          this.matrix[y + player.pos.y][x + player.pos.x] = value;
+        }      
+      });
+    }); 
   }
 }
 
-function clearLines(){
-  for(let y = tetris.length - 1; y >= 0; y--){
-      if(tetris[y].every(value => value !== 0)){ 
-       tetris.unshift(tetris.splice(y,1)[0].fill(0));
-        y++;      
-        updateScore()
-      }
-   }
- }
-
-
-function collision(tetris,tetromino){
-  for(let y = 0; y < tetromino.matrix.length; y++){
-    for(let x = 0; x < tetromino.matrix[y].length; x++){
-      if(tetromino.matrix[y][x] !== 0 &&
-        ((tetris.length > (y + tetromino.pos.y)) &&
-         tetris[y + tetromino.pos.y][x + tetromino.pos.x]) !== 0){
-            return true;                                    
-          }
-        }
-      }
-    return false;
-}
-
-function getMatrix(height,width){
-  const matrix = [];
-      while(height > 0){
-        matrix.push(new Array(width).fill(0))
-        height--;
-      }
-  return matrix;
-}
 
 function getTetromino(){
   const tetrominoes = [
@@ -129,10 +153,8 @@ function getTetromino(){
 }
 
 function randomNumber(start,end){
-  return Math.floor(Math.random()*(end-start+1) + start);
+  return Math.floor(Math.random()*(end - start +1) + start);
 }
-
-
 
 const colors = ['null','#2E34A6', '#41A69C', '#ABBF0F', '#F27B13','#BF3E0F','#BF046B','#67696B'];
 
@@ -145,6 +167,7 @@ function drawMatrix(matrix, position){
         context.fillStyle = colors[value];
         context.fillRect(x + position.x , y + position.y, 1,1);
         context.strokeRect(x + position.x + 0.030,  y + position.y + 0.02 , 1, 0.98);
+    
       }
     });
   });
@@ -153,31 +176,42 @@ function drawMatrix(matrix, position){
 function drawTetris(){
   context.clearRect(0,0,canvas.width,canvas.height);
   drawMatrix(tetromino.matrix,tetromino.pos);
-  drawMatrix(tetris, {x:0, y:0})
-}
-
-function landTetromino(tetris, tetromino){
-  tetromino.matrix.forEach((row,y) => {
-      row.forEach((value,x)=>{
-        if(value !== 0){
-            tetris[y + tetromino.pos.y][x + tetromino.pos.x] = value;
-        }
-      });
-  });
+  drawMatrix(tetris.matrix, {x:0, y:0})
 }
 
 function dropTetromino(){
   tetromino.pos.y += 1;
-  if(collision(tetris, tetromino)){
+  if(tetris.collision(tetromino)){
     tetromino.pos.y -= 1;
     landingTetrominoAudio.play();
-    landTetromino(tetris, tetromino);
-    gameOver();
+    tetris.landTetromino(tetromino);
+    if(tetromino.pos.y === 0){
+     // isOver = true;
+      gameOver();
+    }
     nextTetromino();
-    clearLines();
-  }
+    tetris.clearLines();
+   }
   dropCounter = 0;
 }
+
+let startTime, endTime;
+function start() {
+  startTime = new Date();
+};
+function end() {
+  endTime = new Date();
+  let timeDiff = endTime - startTime; 
+  let timeDiffSeconds = timeDiff/1000;
+  let mins = Math.floor(timeDiffSeconds/60);
+  let seconds = Math.floor(timeDiffSeconds-(mins * 60));
+
+  if(seconds < 10){
+    seconds = '0' + seconds;
+  }
+  return  `${mins}:${(seconds)}`;
+}
+
 
 let timeInterval = 0;
 let lastTime = 0;
@@ -190,23 +224,29 @@ function update(time = 0){
     dropTetromino();
     timeInterval = 0;
   }
+  updateScore();
   drawTetris();
-  requestAnimationFrame(update)
+  showTime.innerHTML = end();
+  requestAnimationFrame(update);
+}
+
+function gameOver(){
+  gameOverMessage(); 
+  cancelAnimationFrame();
 }
 
 const tetromino = {
   matrix: getTetromino(),
-  pos:{x:5, y:0,},
+  pos:{x:5, y:0},
   score: 0,
   dropInterval:1000,
-  level: 1,
 }
 
-const tetris = getMatrix(20,12);
+let tetris = new Tetris(20,12);
 
 function moveTetromino(direction){
   tetromino.pos.x += direction;
-  if(collision(tetris,tetromino)){
+  if(tetris.collision(tetromino)){
     direction = -direction;
     tetromino.pos.x += direction;
   }
@@ -215,14 +255,14 @@ function moveTetromino(direction){
 function nextTetromino(){
   tetromino.matrix= getTetromino();
   tetromino.pos.y = 0;
-  tetromino.pos.x = 4;
+  tetromino.pos.x = 5;
 }
 
 function rotateTetromino(direction){
   const startPos = tetromino.pos.x;
   let diff = 1;
   rotate(tetromino.matrix, direction);
-  while(collision(tetris, tetromino)){
+  while(tetris.collision(tetromino)){
     tetromino.pos.x += diff;
     diff = -(diff+ (diff > 0 ? 1 : -1));
     if(diff > tetromino.matrix[0].length){
@@ -268,12 +308,14 @@ window.onkeydown =(e)=>{
     break;
   }
 }
-playButton.onclick = ()=>{
-  document.getElementsByClassName("control")[0].style.display = 'none'; 
-  slideDownTetris();
-  //backgroundAudio.loop = true;
- // backgroundAudio.play();
-  update();
-  };
+
+playButton.onclick = () => {
+    document.getElementsByClassName("control")[0].style.display = 'none'; 
+    start();
+    slideDownTetris();
+    backgroundAudio.loop = true;
+    backgroundAudio.play();
+    update();
+};
 
 }
