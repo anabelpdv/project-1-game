@@ -16,9 +16,9 @@
             <h1>SCORE</h1>
             <p id="score" class="info">0</p>
         </div>
-        <div class="panel">
-            <h1>LINES</h1>
-            <p id="lines" class="info" >0</p>
+      <div class="panel">
+            <h1>LEVEL</h1>
+            <p id="level" class="info">1</p>
         </div>
     </div>
       
@@ -29,15 +29,20 @@
     </div>
 
     <div class="container">
-        <div class="panel">
-            <h1>LEVEL</h1>
-            <p id="level" class="info">1</p>
-        </div>
-        <div class="panel">
+        <div id ="next" class="panel">
+             <h1>NEXT</h1>
+             <div id="tetromino-image"></div>
+        </div> 
+        <div class="panel time-panel">
             <h1>TIME</h1>
             <p id="time" class="info">0</p>
             <p class="info">min</p>
-        </div>
+        </div> 
+        <div class="panel">
+            <h1>LINES</h1>
+            <p id="lines" class="info" >0</p>
+       </div>
+        
     </div>   
 </div>
 <div class="control">
@@ -54,6 +59,7 @@
            <li>Move the tetrominoes left and right with the arrow keys</li>
            <li>Use the up arrow to rotate the tetrominoes to fit holes</li>
            <li>Use the down arrow to accelerate the tetrominoes downwards</li>
+           <li>To pause the game use the spacebar</li>
        </ol>
     </div>
   

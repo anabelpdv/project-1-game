@@ -3,26 +3,22 @@ let canvas = document.querySelector('#tetris');
 let context = canvas.getContext('2d');
 canvas.width =468;
 canvas.height = 780;
-
+let animateLoop = true;
 let isOver = false;
 
 context.scale(39,39);//make the components bigger
-
 
 const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
 let showScore = document.querySelector('#score');
 let showLines = document.querySelector('#lines');
 let showLevel = document.querySelector('#level');
 let showTime = document.querySelector('#time');
+let showNext = document.querySelector('#tetromino-image');
 let playButton = document.querySelector('#play-button');
 let instButton = document.querySelector('#inst-button');
 let backgroundAudio = new Audio("sounds/Popcorn.mp3");
 let landingTetrominoAudio = new Audio("sounds/falling-tetromino.mp3");
 let flippingTetrominoAudio = new Audio("sounds/flipping-tetromino.mp3");
-
-
-
-
 
 instButton.onclick = () => {
 $('#instructions').slideToggle();
@@ -39,7 +35,6 @@ function updateScore(){
   showScore.innerHTML = tetromino.score/100|0;
 }
 
-
 let level = 1;
 function nextLevel(){
   if((lineCounter % 2 === 0) && (tetromino.dropInterval > 200)){
@@ -50,9 +45,6 @@ function nextLevel(){
   }
 }
 
-
-
-
 let lineCounter = 0;
 
 function updateLines(){
@@ -60,14 +52,11 @@ function updateLines(){
   nextLevel(); 
 }
 
-
 function gameOverMessage(){
   context.fillStyle = "white";
   context.font = "1.7px Arial";
   context.fillText("GAME OVER",0.9,9.5);
 }
-
-
 
 class Tetris{
   constructor(height,width){
@@ -115,7 +104,28 @@ class Tetris{
     }); 
   }
 }
+function 
+teTetris(){
+  if(animateLoop){
+    animateLoop = false;
+    backgroundAudio.pause( );
+  }else if(!animateLoop){
+    animateLoop = true;
+    backgroundAudio.play();
+    update();
+  }
+}
 
+const tetrominoes = [null,'images/T.png','images/O.png','images/I.png','images/S.png','images/Z.png','images/L.png','images/J.png']
+function nextPreview(matrix){
+  matrix.forEach((row,y) => {
+    row.forEach(value => {
+    if (value!==0){
+      showNext.style.backgroundImage = `url(${tetrominoes[value]})`;
+    }
+    });
+  });
+}
 
 function getTetromino(){
   const tetrominoes = [
@@ -179,16 +189,21 @@ function drawTetris(){
   drawMatrix(tetris.matrix, {x:0, y:0})
 }
 
+function gameOver(){
+  if(tetromino.pos.y === 0){
+    animateLoop = false;
+    isOver = true;
+    backgroundAudio.pause();
+  }
+}
+
 function dropTetromino(){
   tetromino.pos.y += 1;
   if(tetris.collision(tetromino)){
     tetromino.pos.y -= 1;
     landingTetrominoAudio.play();
     tetris.landTetromino(tetromino);
-    if(tetromino.pos.y === 0){
-     // isOver = true;
-      gameOver();
-    }
+    gameOver();
     nextTetromino();
     tetris.clearLines();
    }
@@ -196,9 +211,11 @@ function dropTetromino(){
 }
 
 let startTime, endTime;
+
 function start() {
   startTime = new Date();
 };
+
 function end() {
   endTime = new Date();
   let timeDiff = endTime - startTime; 
@@ -209,9 +226,8 @@ function end() {
   if(seconds < 10){
     seconds = '0' + seconds;
   }
-  return  `${mins}:${(seconds)}`;
+  return `${mins}:${(seconds)}`;
 }
-
 
 let timeInterval = 0;
 let lastTime = 0;
@@ -227,20 +243,36 @@ function update(time = 0){
   updateScore();
   drawTetris();
   showTime.innerHTML = end();
-  requestAnimationFrame(update);
+
+  if(animateLoop){
+    requestAnimationFrame(update);
+  }
+  if(isOver){
+    gameOverMessage();
+  }
 }
 
-function gameOver(){
-  gameOverMessage(); 
-  cancelAnimationFrame();
+let currentMatrix = getTetromino();
+
+function nextTetromino(){
+  let nextMatrix = getTetromino();
+  nextPreview(nextMatrix);
+  tetromino.matrix = currentMatrix;
+  currentMatrix = nextMatrix;
+  tetromino.pos.y = 0;
+  tetromino.pos.x = 5;
 }
+
 
 const tetromino = {
-  matrix: getTetromino(),
+  matrix: currentMatrix,
   pos:{x:5, y:0},
   score: 0,
   dropInterval:1000,
 }
+
+nextTetromino();
+
 
 let tetris = new Tetris(20,12);
 
@@ -250,12 +282,6 @@ function moveTetromino(direction){
     direction = -direction;
     tetromino.pos.x += direction;
   }
-}
-
-function nextTetromino(){
-  tetromino.matrix= getTetromino();
-  tetromino.pos.y = 0;
-  tetromino.pos.x = 5;
 }
 
 function rotateTetromino(direction){
@@ -294,6 +320,9 @@ function rotate(matrix,dir){
 
 window.onkeydown =(e)=>{
   switch(e.keyCode){
+    case 32:
+      pauseteTetris();
+       break;
     case 37:
       moveTetromino(-1);
       break;
