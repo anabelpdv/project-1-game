@@ -26,11 +26,16 @@ button{
   text-shadow: 5px 1px rgba(4, 34, 90,0.8);
   color:white;
   font-weight: bolder;
-  font-size: 3em;
+  font-size: 5em;
   border:none;
   cursor:pointer;
   margin-top:25px;
 }
+
+#inst-button{
+  font-size: 1em;
+}
+
 #instructions{
   display:none;
   background: rgba(4, 34, 90, 0.3);

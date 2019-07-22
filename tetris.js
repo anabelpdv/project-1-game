@@ -4,9 +4,9 @@ let context = canvas.getContext('2d');
 canvas.width =468;
 canvas.height = 780;
 let animateLoop = true;
+context.scale(39,39);
 let isOver = false;
 
-context.scale(39,39);//make the components bigger
 
 const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
 let showScore = document.querySelector('#score');
@@ -55,7 +55,7 @@ function updateLines(){
 function gameOverMessage(){
   context.fillStyle = "white";
   context.font = "1.7px Arial";
-  context.fillText("GAME OVER",0.9,9.5);
+  context.fillText("GAME OVER",0.8,9.5);
 }
 
 class Tetris{
@@ -104,8 +104,7 @@ class Tetris{
     }); 
   }
 }
-function 
-teTetris(){
+function pauseTetris(){
   if(animateLoop){
     animateLoop = false;
     backgroundAudio.pause( );
@@ -158,7 +157,6 @@ function getTetromino(){
           [0,0,0]]
         ,
       ]; 
-
     return tetrominoes[randomNumber(0,tetrominoes.length-1)];
 }
 
@@ -177,7 +175,6 @@ function drawMatrix(matrix, position){
         context.fillStyle = colors[value];
         context.fillRect(x + position.x , y + position.y, 1,1);
         context.strokeRect(x + position.x + 0.030,  y + position.y + 0.02 , 1, 0.98);
-    
       }
     });
   });
@@ -321,7 +318,7 @@ function rotate(matrix,dir){
 window.onkeydown =(e)=>{
   switch(e.keyCode){
     case 32:
-      pauseteTetris();
+      pauseTetris();
        break;
     case 37:
       moveTetromino(-1);
