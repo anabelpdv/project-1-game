@@ -8,7 +8,7 @@ context.scale(39,39);//Scale the canvas so that each pixel is 39 times bigger
 let isOver = false;//Control game over message printing
 
 /* Array containing the backgrounds that are dynamically updated as the levels change */ 
-const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
+const backgrounds = [null,null,'/images/screen2.jpeg','/images/screen3.jpg','/images/screen4.jpg','/images/screen5.jpg'];
 let showScore = document.querySelector('#score');
 let showLines = document.querySelector('#lines');
 let showLevel = document.querySelector('#level');
@@ -16,9 +16,9 @@ let showTime = document.querySelector('#time');
 let showNext = document.querySelector('#tetromino-image');
 let playButton = document.querySelector('#play-button');
 let instButton = document.querySelector('#inst-button');
-let backgroundAudio = new Audio("sounds/Popcorn.mp3");
-let landingTetrominoAudio = new Audio("sounds/falling-tetromino.mp3");
-let flippingTetrominoAudio = new Audio("sounds/flipping-tetromino.mp3");
+let backgroundAudio = new Audio("/sounds/Popcorn.mp3");
+let landingTetrominoAudio = new Audio("/sounds/falling-tetromino.mp3");
+let flippingTetrominoAudio = new Audio("/sounds/flipping-tetromino.mp3");
 
 instButton.onclick = () => {
 $('#instructions').slideToggle();//animate instructions panel
