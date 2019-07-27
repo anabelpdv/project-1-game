@@ -1,6 +1,6 @@
 body{
   background-image: url(/images/screen1.jpg);
-
+  background-size: cover;
   background-position:center; 
   background-repeat: no-repeat;
   padding:5px;
@@ -50,7 +50,7 @@ padding-right:15px;
 }
 
 #place-holder{
-  height:795px
+  height:794px
 }
 
 #canvas{
