@@ -3,11 +3,11 @@ let canvas = document.querySelector('#tetris');
 let context = canvas.getContext('2d');
 canvas.width =468;
 canvas.height = 780;
-let animateLoop = true;
-context.scale(39,39);
-let isOver = false;
+let animateLoop = true;//Control frames generation
+context.scale(39,39);//Scale the canvas so that each pixel is 39 times bigger
+let isOver = false;//Control game over message printing
 
-
+/* Array containing the backgrounds that are dynamically updated as the levels change */ 
 const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
 let showScore = document.querySelector('#score');
 let showLines = document.querySelector('#lines');
@@ -21,43 +21,52 @@ let landingTetrominoAudio = new Audio("sounds/falling-tetromino.mp3");
 let flippingTetrominoAudio = new Audio("sounds/flipping-tetromino.mp3");
 
 instButton.onclick = () => {
-$('#instructions').slideToggle();
+$('#instructions').slideToggle();//animate instructions panel
 }
 
-function slideDownTetris(){
+function slideDownTetris(){//animate all the panels the comprise the game and that are shown after user clicks PLAY button
   $("#canvas").slideDown(1150,'linear',()=>{
     $(".panel").slideDown(1300)
   });  
 }
 
+/* updateScore: add 1 to the score and update the DOM. The score is based on the amount of frames */ 
 function updateScore(){
-  tetromino.score++;
-  showScore.innerHTML = tetromino.score/100|0;
+  showScore.innerHTML = tetromino.score++/100|0;// Divide by 100 and floor the score to make it a smaller whole number 
 }
 
-let level = 1;
-function nextLevel(){
-  if((lineCounter % 2 === 0) && (tetromino.dropInterval > 200)){
-   level++;
-    document.body.style.backgroundImage = `url(${backgrounds[level]})`
-    tetromino.dropInterval -= 200;
-    showLevel.innerHTML = level;  
-  }
-}
+let lineCounter = 0;//count the lines that are cleared
 
-let lineCounter = 0;
-
+/* updateScore: add 1 to the lineCounter and update the DOM. At the end call nextLevel function to
+ check if it's possible to go to the next level */ 
 function updateLines(){
   showLines.innerHTML = ++lineCounter;
   nextLevel(); 
 }
 
+let level = 1; //first level of the game
+
+/* nextLevel: check if the number of lines is the minimum required to go to the next level. The 
+dropInterval needs to be greater than 200 to guarantee that the the speed of the falling tetromino will never
+be faster than 1/200ms */ 
+function nextLevel(){
+  if((lineCounter % 2 === 0) && (tetromino.dropInterval > 200)){
+    level++;//if the previous conditions are met go to next level
+    document.body.style.backgroundImage = `url(${backgrounds[level]})`//change background
+    tetromino.dropInterval -= 200;//decrease interval so the tretomino drops faster;
+    showLevel.innerHTML = level;  //update the DOM with new level;
+  }
+}
+
+
+/* gameOverMessage: print game over message */ 
 function gameOverMessage(){
   context.fillStyle = "white";
   context.font = "1.7px Arial";
   context.fillText("GAME OVER",0.8,9.5);
 }
 
+/* class Tetris: represents the container where the tetrominoes will drop and land */ 
 class Tetris{
   constructor(height,width){
     this.width = width;
@@ -104,6 +113,7 @@ class Tetris{
     }); 
   }
 }
+
 function pauseTetris(){
   if(animateLoop){
     animateLoop = false;
