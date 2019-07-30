@@ -8,7 +8,7 @@ context.scale(39,39);//Scale the canvas so that each pixel is 39 times bigger
 let isOver = false;//Control game over message printing
 
 /* Array containing the backgrounds that are dynamically updated as the levels change */ 
-const backgrounds = [null,null,'.images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
+const backgrounds = [null,null,'images/screen2.jpeg','images/screen3.jpg','images/screen4.jpg','images/screen5.jpg'];
 let showScore = document.querySelector('#score');
 let showLines = document.querySelector('#lines');
 let showLevel = document.querySelector('#level');
