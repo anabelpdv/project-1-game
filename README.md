@@ -9,3 +9,4 @@ It is a tetris game inspired by Tetris 4000.
 * The objective is to clear as many lines as possible to avoid reaching the top.
 
 
+![Landing page](images/landing.png)
