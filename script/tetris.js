@@ -73,10 +73,11 @@ class Tetris{
     this.height = height;
     this.matrix = this.getMatrix();
   }
+/* getMatrix: returns a matrix of the height and width specified when a tretis object is created */
   getMatrix(){
       const matrix = [];
           while(this.height > 0){
-            matrix.push(new Array(this.width).fill(0))
+            matrix.push(new Array(this.width).fill(0))//create new row and fill it with zeros
             this.height--;
           }
       return matrix;
@@ -93,6 +94,10 @@ class Tetris{
         }
       return false;
   }
+  /* clearLines: scans the matrix from the bottom up and as soon as it encounters a line that is completely filled 
+   * deletes it and adds an empty line at the top. The splice() remove the desired line and returns it. Then fill() fills
+   * it with zeros and finally unshift() adds it at the top of the matrix
+   */
   clearLines(){
     for(let y = this.matrix.length - 1; y >= 0; y--){
         if(this.matrix[y].every((value) => value !==0)){
