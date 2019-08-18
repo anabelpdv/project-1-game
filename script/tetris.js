@@ -94,9 +94,10 @@ class Tetris{
         }
       return false;
   }
-  /* clearLines: scans the matrix from the bottom up and as soon as it encounters a line that is completely filled 
-   * deletes it and adds an empty line at the top. The splice() remove the desired line and returns it. Then fill() fills
-   * it with zeros and finally unshift() adds it at the top of the matrix
+  /* clearLines: scans the matrix from the bottom up and as soon as it encounters a line that is 
+   * completely filled deletes it and adds an empty line at the top. The splice() remove the 
+   * desired line and returns it. Then fill() fills it with zeros and unshift() adds it at the 
+   * top of the matrix.
    */
   clearLines(){
     for(let y = this.matrix.length - 1; y >= 0; y--){
@@ -107,7 +108,9 @@ class Tetris{
         }
       }
   }
-
+  /* landTetromino: save the matrix that represents the tretromino into the matrix that represents
+   * all the blocks that has already landed. It receives as argument ta tetromino(matrix).
+   */
   landTetromino(player){
     player.matrix.forEach((row,y) => {
       row.forEach((value,x) =>{ 
